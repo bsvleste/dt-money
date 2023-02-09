@@ -1,29 +1,15 @@
 import { FileSearch, MagnifyingGlass } from "phosphor-react"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Header } from "../../components/Header"
 import { Summary } from "../../components/Summary"
+import { TransactionContext } from "../../contexts/TransactionsCotext"
+import { dateFormatter, priceFormatter } from "../../utils/formatters"
 import { SearchForm } from "./components/SearchForm"
 import { PriceHighlight, TransactionContainer, TransactionTable } from "./styles"
 
-interface TransactionsProps {
-    id: number
-    description: string
-    type: 'income' | 'outcome'
-    price: number
-    category: string
-    createAt: string
-}
 
 export function Transaction(){
-    const [transactions, setTransactions] = useState<TransactionsProps[]>([])
-    async function loadTransactions() {
-        const response = await fetch('http://localhost:3333/transactions')
-        const data = await response.json()
-        setTransactions(data)
-    }
-    useEffect(() => {
-        loadTransactions()
-    }, [])
+    const { transactions } = useContext(TransactionContext)
     return (
         <>
             <Header/>
@@ -38,16 +24,17 @@ export function Transaction(){
                                     <td width="40%">{transaction.description}</td>
                                     <td>
                                         <PriceHighlight variant={transaction.type}>
-                                            {transaction.price}
+                                            {
+                                                transaction.type === 'outcome' && "- "
+                                            }
+                                            {priceFormatter.format(transaction.price)}
                                         </PriceHighlight>
                                     </td>
                                     <td>{transaction.category}</td>
-                                    <td>{transaction.createAt}</td>
+                                    <td>{dateFormatter.format(new Date(transaction.createAt))}</td>
                                 </tr>
                             ))
                         }
-
-
                     </tbody>
                 </TransactionTable>
             </TransactionContainer>

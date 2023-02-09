@@ -13,7 +13,15 @@
             "description":"Hamburguer",
             "type":"outcome",
             "category":"Alimentação",
-            "price":60.00,
+            "price":60,
+            "createAt":"2023-03-08T18:50:14.242Z"
+        },
+        {
+            "id":3,
+            "description":"Vidro Carro",
+            "type":"outcome",
+            "category":"Veiculo",
+            "price":130,
             "createAt":"2023-03-08T18:50:14.242Z"
         }
     ]
