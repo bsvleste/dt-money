@@ -1,25 +1,32 @@
-import { useContext } from "react";
-import { TransactionContext } from "../contexts/TransactionsCotext";
+import { useMemo } from 'react'
+import { useContextSelector } from 'use-context-selector'
+import { TransactionContext } from '../contexts/TransactionsCotext'
 
-export function useSummary(){
-    const { transactions } = useContext(TransactionContext)
-    const summary = transactions.reduce(
-        (accumulator, transaction) => {
-            if (transaction.type === 'income') {
-                accumulator.income += transaction.price
-                accumulator.total += transaction.price
-            } else {
-                accumulator.outcome += transaction.price
-                accumulator.total -= transaction.price
+export function useSummary() {
+  const transactions = useContextSelector(TransactionContext, (context) => {
+    return context.transactions
+  })
 
-            }
-            return accumulator
-        },
-        {
-            income: 0,
-            outcome: 0,
-            total: 0
+  const summary = useMemo(() => {
+    return transactions.reduce(
+      (acc, transaction) => {
+        if (transaction.type === 'income') {
+          acc.income += transaction.price
+          acc.total += transaction.price
+        } else {
+          acc.outcome += transaction.price
+          acc.total -= transaction.price
         }
-    );
-    return summary
+
+        return acc
+      },
+      {
+        income: 0,
+        outcome: 0,
+        total: 0,
+      },
+    )
+  }, [transactions])
+
+  return summary
 }
